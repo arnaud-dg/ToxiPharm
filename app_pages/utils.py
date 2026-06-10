@@ -1,7 +1,9 @@
 """Outils partagés par les pages : chargement des contenus markdown et rendu."""
 from __future__ import annotations
 
+import base64
 import re
+import textwrap
 from pathlib import Path
 
 import streamlit as st
@@ -64,10 +66,26 @@ def split_h3_subsections(md: str) -> list[tuple[str, str]]:
 
 
 _MERMAID_PATTERN = re.compile(r"```mermaid\n(.*?)```", re.DOTALL)
+_IMAGE_PATTERN = re.compile(r"!\[([^\]]*)\]\(([^)]+)\)")
+
+
+def _resolve_local_images(md: str) -> str:
+    """Remplace les images locales par des data URIs base64 pour Streamlit."""
+    def replace(match: re.Match) -> str:
+        alt, path_str = match.group(1), match.group(2)
+        path = ASSETS_DIR / Path(path_str).name
+        if not path.exists():
+            return match.group(0)
+        ext = path.suffix.lstrip(".").lower()
+        mime = {"jpg": "jpeg", "jpeg": "jpeg", "png": "png", "gif": "gif"}.get(ext, "png")
+        b64 = base64.b64encode(path.read_bytes()).decode()
+        return f'<img src="data:image/{mime};base64,{b64}" alt="{alt}" style="max-width:100%;height:auto;"/>'
+    return _IMAGE_PATTERN.sub(replace, md)
 
 
 def render_markdown_with_mermaid(md: str, *, mermaid_height: int = 500) -> None:
     """Affiche un markdown en remplaçant les blocs ```mermaid``` par st_mermaid."""
+    md = _resolve_local_images(md)
     last_end = 0
     for match in _MERMAID_PATTERN.finditer(md):
         before = md[last_end : match.start()]
@@ -116,16 +134,21 @@ def page_header(title: str, subtitle: str | None = None) -> None:
 def sidebar_branding() -> None:
     """Logo et bandeau de l'atelier dans la sidebar (commun à toutes les pages)."""
     logo_path = ASSETS_DIR / "logo.png"
-    if logo_path.exists():
-        st.sidebar.image(str(logo_path), use_container_width=True)
-    st.sidebar.markdown(
-        f"""
-        <div style='text-align: center; margin-top: 8px;'>
-            <div style='font-size: 0.85rem; color: #555;'>Atelier</div>
-            <div style='font-weight: 600; color: {TOXI_PURPLE};'>Gouvernance et Human Oversight</div>
-            <div style='font-size: 0.8rem; color: #777;'>en environnement BPL</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    st.sidebar.divider()
+    if not logo_path.exists():
+        return
+    logo_b64 = base64.b64encode(logo_path.read_bytes()).decode()
+    css = f"""
+    <style>
+        [data-testid="stSidebarNav"]::before {{
+        content: "";
+        display: block;
+        height: 200px;
+        margin: 10px 10px 10px 10px;
+        background-image: url("data:image/png;base64,{logo_b64}");
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+        }}
+    </style>
+    """
+    st.sidebar.markdown(textwrap.dedent(css), unsafe_allow_html=True)

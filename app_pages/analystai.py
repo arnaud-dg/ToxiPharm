@@ -10,18 +10,17 @@ from app_pages.utils import (
     split_h2_sections,
 )
 
-
 def render() -> None:
     sidebar_branding()
     page_header(
         "AnalystAI — Groupe 1",
-        "Traitement automatisé des chromatogrammes (ML/DL)",
+        "Traitement automatisé des chromatogrammes (Deep Learning)",
     )
 
     sections = split_h2_sections(load_markdown("page2_analystai.md"))
 
     tab_solution, tab_flowchart, tab_verbatim = st.tabs(
-        ["La solution", "Le flowchart actuel", "L'avis des équipes"]
+        ["La solution informatique", "Le flowchart actuel", "L'avis des équipes"]
     )
 
     with tab_solution:
@@ -35,8 +34,7 @@ def render() -> None:
 
     with tab_verbatim:
         st.markdown(
-            "Six personnes interagissent au quotidien avec AnalystAI. "
-            "Lisez leurs témoignages, notez ce qui interroge."
+            "Voici 6 témoignages que vous avez pu receuillir lors de votre investigation terrain."
         )
         st.markdown("")
         render_verbatim_cards(sections.get("Onglet 2.3 — Verbatim AnalystAI", ""))

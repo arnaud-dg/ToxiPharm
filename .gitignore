@@ -32,3 +32,6 @@ secrets.toml
 # OS
 .DS_Store
 Thumbs.db
+
+# Documents de reference (normes sous copyright)
+docs/

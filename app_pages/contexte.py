@@ -1,6 +1,5 @@
 """Page 2 : Descriptif de l'entreprise et Votre mission."""
 import streamlit as st
-
 from app_pages.utils import (
     load_markdown,
     page_header,
@@ -9,19 +8,18 @@ from app_pages.utils import (
     split_h2_sections,
 )
 
-
+# Affichage du contenu de la page
 def render() -> None:
     sidebar_branding()
     page_header(
         "Contexte et mission",
-        "Toxi'Pharm — laboratoire d'études toxicologiques sous BPL OCDE",
     )
 
     sections = split_h2_sections(load_markdown("page1_accueil.md"))
 
     # Bloc A — Présentation
     with st.container(border=True):
-        st.markdown("### Toxi'Pharm en bref")
+        st.markdown("### Quelques mots sur Toxi'Pharm")
         st.markdown(sections.get("Bloc A — ToxiPharm : présentation de l'entreprise", ""))
 
     # Bloc B — Enjeux
