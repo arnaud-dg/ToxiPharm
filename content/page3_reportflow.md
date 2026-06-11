@@ -5,11 +5,11 @@
 
 ## Onglet 3.1 — Comment fonctionne le système
 
-**Volume traité** : **6 rapports d'étude rendus via ReportFlow** en 5 mois (3 rapports pivotaux pour AMM, 3 rapports intermédiaires), pour 4 sponsors distincts.
+**Volume traité** : **6 rapports d'étude rendus via ReportFlow** en 5 mois (3 rapports pivotaux pour AMM, 3 rapports intermédiaires), pour 4 sponsors distincts. Ces rapports font de 30 à 300 pages et sont produits en une seule passe, sans découpage en sous-tâches contrôlées section par section.
 
 **L'Origine de l'outil** : ReportFlow est un **outil développé en interne** en duo par le Responsable Assurance Qualité et par un membre de l'équipe IT de ToxiPharm. En réponse à une demande forte de la Direction vis-à-vis de la Rédaction Scientifique, ils ont eu l'idée de construire de façon autonome un agent à l'aide de **Copilot**. Le projet a démarré en octobre 2025 ; la mise en production a eu lieu en décembre 2025. Le développement a été piloté par Bernard P. (DSI). Aucun budget spécifique n'a été alloué pour ce projet pour un audit externe ou une revue de code par un tiers spécialisé. 
 
-**Type d'IA** : Le système repose sur une IA générative basée sur un **Large Language Model (LLM) commercial** accessible via API (GPT-5.1 au moment du déploiement, avec possibilité de bascule vers Claude ou Mistral selon les coûts d'usage). Aucun fine-tuning spécifique au domaine pharmaceutique n'a été effectué : ToxiPharm utilise le modèle grand public "tel quel" et compense par un **prompt système** rédigé par l'équipe IT en s'inspirant de templates trouvés en ligne et adaptés avec Copilot.
+**Type d'IA** : Le système repose sur une IA générative basée sur un **Large Language Model (LLM) commercial** accessible via API (GPT-5.1 au moment du déploiement, avec possibilité de bascule vers Claude ou Mistral selon les coûts d'usage). Aucun fine-tuning spécifique au domaine pharmaceutique n'a été effectué : ToxiPharm utilise le modèle grand public "tel quel" et compense par un **prompt système** rédigé par l'équipe IT en s'inspirant de templates trouvés en ligne et adaptés avec Copilot. Les données d'étude, y compris des informations confidentielles appartenant aux sponsors, sont transmises à l'API du LLM commercial. Aucun contrat de traitement spécifique (DPA), aucune analyse RGPD ni clause de non-réutilisation des données n'a été formalisée avec l'éditeur.
 
 **Architecture technique.** L'application ReportFlow est une interface web légère qui orchestre trois éléments :
 1. un module d'extraction de données qui va permettre d'aller chercher les données structurées issues du LIMS via l'API standard et les données non structurées (rapports, procotoles, ...) se trouvant dans le Sharepoint
@@ -38,7 +38,7 @@
 - ReportFlow lit le LIMS et traite toutes les données comme également fiables (le score de confiance n'est plus là)
 - Les références bibliographiques sont générées sans connexion aux bases primaires — risque d'hallucination structurel
 - Aucun point de contrôle distinct entre sections "factuelles" (résultats) et sections "narratives" (discussion, références)
-- Le code de l'application n'a pas été audité par un tiers spécialisé
+- Le code de l'application n'a pas été audité par un tiers spécialisé, et aucune analyse de sécurité (notamment le risque d'injection de prompt via les documents non structurés du Sharepoint) n'a été menée
 
 ---
 
@@ -71,13 +71,15 @@
 > Sur la qualité du code, ce n'est pas vraiment mon métier, mais il fonctionne en production. Un collègue m'a demandé si j'avais fait une revue de code formelle, ni tests unitaires structurés, ni audit sécurité — on avait des délais. 
 > J'avais identifié dès la conception le risque d'hallucination sur les références biblio et proposé une connexionn avec PubMed, mais ça a été reporté en v2, parce que ce n'était pas dans le scope initial. La v2 n'a jamais été lancée. La direction a considéré qu'on avait livré, on est passés à autre chose.
 > J'ai trouvé un petit site qui liste des références biblio, je vais essayer de l'intégrer à ReportFlow pour améliorer ce point.
-> J'ai fait évoluer les 2 prompts systèmes à plusieurs reprises (peut-être 2 fois par mois en moyenne) pour les optimiser petit à petit. A chaque fois je vérifie quelques items de sortie pour confirmer que tout est OK."
+> J'ai fait évoluer les 2 prompts systèmes à plusieurs reprises (peut-être 2 fois par mois en moyenne) pour les optimiser petit à petit. A chaque fois je vérifie quelques items de sortie pour confirmer que tout est OK.
+> Et honnêtement, quand l'éditeur met à jour son modèle derrière l'API, je ne suis pas prévenu : la sortie peut changer du jour au lendemain sans que personne ne le voie. On n'a aucun suivi des hallucinations ni du taux de corrections des rédacteurs, donc une dérive passerait inaperçue."
 
 ### Bernard P. — DSI / IT Manager de ToxiPharm
 *A piloté le projet ReportFlow*
 
 > "Le projet ReportFlow a été piloté par l'IT en sponsoring de la Rédaction Scientifique. Sur le périmètre du connecteur LIMS, on a transmis à ReportFlow ce que le LIMS expose dans son API standard — valeur validée + flag de statut. Je n'ai jamais entendu parler des fameux 'scores de confiance' d'AnalystAI sur lesquels tout le monde discute aujourd'hui. Personne ne nous a dit 'au fait, AnalystAI génère des scores qu'il faudrait peut-être inclure'. 
-> On n'est pas chimistes, notre rôle c'est de connecter les systèmes existants. On n'a pas invité le Département Analytique aux ateliers de conception de ReportFlow — c'est une faille d'architecture de l'information dont je porte la responsabilité."
+> On n'est pas chimistes, notre rôle c'est de connecter les systèmes existants. On n'a pas invité le Département Analytique aux ateliers de conception de ReportFlow — c'est une faille d'architecture de l'information dont je porte la responsabilité.
+> Sur la confidentialité, j'avoue qu'on n'a pas tranché : on envoie des données sponsor vers une API externe sans avoir vérifié ce que l'éditeur en fait. Personne ne m'a posé la question au lancement."
 
 ### Pr. Hervé F. — Directeur d'Études (DE) ZB-2024-087
 *A signé le rapport en sa qualité de DE BPL*

@@ -38,10 +38,10 @@ def render() -> None:
 
             Toxi'Pharm est un laboratoire d'études toxicologiques précliniques sous BPL OCDE.
             L'entreprise Toxi'Pharm a récemment déployé deux outils d'IA afin de gagner en productivité et de démontrer son envie d'innovation.
-            - Le premier module d'IA est un module d'IA traditionnelle, il porte sur l'analyse chromatographique (**AnalystAI**) 
-            - Le second est un agent de rédaction de rapports basé sur un LLM (**ReportFlow**).
+            - Le premier module d'IA est un module d'**IA traditionnelle**, il porte sur l'analyse chromatographique (**AnalystAI**) 
+            - Le second est un agent de rédaction de rapports basé sur l'**IA générative** (**ReportFlow**).
 
-            Récemment, un sponsor a relevé des incohérences dans un rapport d'étude. L'investigation interne a révélé que les problèmes étaient liés à l'IA et qu'ils sont bien plus grave qu'attendu.
+            Récemment, un sponsor a relevé des incohérences dans un rapport d'étude. ... L'investigation interne a révélé que les problèmes étaient liés à l'IA et qu'ils sont bien plus grave qu'attendu.
             """
         )
 
@@ -75,12 +75,14 @@ def render() -> None:
     with mission_txt:
         st.markdown(
             """
-            Vous appartenez aux équipes QA de Toxi'Pharm mais travaillez sur un autre site.
-            Vous allez devoir enquêter sur l'un des deux outils, afin :
+            Vous appartenez à l'entreprise Toxi'Pharm, mais travaillez sur un autre site. Vous êtes les enquêteurs mandatés par le RAQ pour l'aider à corriger cette crise.
+            Le RAQ a choisi de séparer l'enquête en deux équipes pour gagner du temps et faire émerger sans biais les défaillances propres à chaque système IA. Vous travaillerez en parallèle sur l'un des deux outils, puis un débrief croisé permettra de reconstituer la chaîne complète des défaillances.
 
-            - Identifier les malfaçons lors de la mise en place des projets
-            - Cartographier les défaillances avérées ou possibles en matière de gouvernance et de supervision
-            - Formuler un plan d'action et des principes structurants pour une future politique IA
+            Dans chacune des 2 équipes, vous allez devoir produire 3 livrables e en 50 minutes :
+
+            1. **Lister les défaillances avérées dans la conduite des projets et/ou les risques et vulnérabilités des systèmes.**
+            2. **Identifier à quels endroits desprocessus appliquer une logique de supervision humaine.**
+            3. **Proposer un plan d'action de rémédiation : les 2 actions techniques, organisationnelles et culturelles qui vous semblent les plus importantes à implémenter.**
             """
         )
 
@@ -116,12 +118,6 @@ def render() -> None:
                 "La solution, le flowchart actuel, l'avis des équipes."
             )
             st.caption("Travail Groupe 2")
-
-    st.divider()
-    st.info(
-        "Bon atelier. Pour démarrer, ouvrez la page **Contexte et mission** dans la barre latérale.",
-        icon="🧭",
-    )
 
 
 render()

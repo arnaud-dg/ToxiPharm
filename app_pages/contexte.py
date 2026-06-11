@@ -39,14 +39,4 @@ def render() -> None:
         mermaid_height=420,
     )
 
-    # Bloc E — Vos missions
-    st.markdown("### Vos missions")
-    with st.container(border=True):
-        st.markdown(sections.get("Bloc E — Vos missions", ""))
-
-    # Annexe — Grille HITL
-    with st.expander("Annexe — Grille HITL (commune aux deux groupes)", expanded=False):
-        st.markdown(sections.get("Annexe — Grille HITL (commune aux deux groupes)", ""))
-
-
 render()
